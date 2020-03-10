@@ -1,3 +1,4 @@
+#include <pmmintrin.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -63,10 +64,8 @@ int main(int argc, char const *argv[]) {
   if (argc == 3) {
     D = atoi(argv[1]);
     R = atoi(argv[2]);
-
   } else {
-    printf("ERRO: O formato debe ser: ./executable -D -R\n");
-    return 0;
+    perror("ERRO: O formato debe ser: ./executable -D -R\n");
   }
 
   typedef struct s {
@@ -74,10 +73,10 @@ int main(int argc, char const *argv[]) {
     long int data[D];
   } s;
 
-  s *punterosLista =
-      (s *)malloc(sizeof(s) * R); // Creamos la lista y reservamos memoria
-  int array[R], pos1, pos2, aux;  // Variables auxiliares que utilizaremos para
-                                  // conseguir la aleatoriedad
+  // Creamos la lista y reservamos memoria
+  s *punterosLista = (s *)_mm_malloc(sizeof(s) * R, 64);
+  // Variables auxiliares que utilizaremos para conseguir la aleatoriedad
+  int array[R], pos1, pos2, aux;
 
   // Asignamos los valores al array de posiciones
   for (int i = 0; i < R; i++) {
@@ -95,8 +94,8 @@ int main(int argc, char const *argv[]) {
     array[pos2] = array[pos1];
   }
 
-// Asignamos los punteros
-  for (int i = 0; i < R ; i++) {
+  // Asignamos los punteros
+  for (int i = 0; i < R; i++) {
     punterosLista[i].p = &punterosLista[array[i]];
     /*
      * No incializaremos el vector de datos dado que
@@ -108,13 +107,12 @@ int main(int argc, char const *argv[]) {
   /*---------Inicio codigo a medir---------*/
   // Accedemos con un bucle a los elementos de la lista
   for (int i = 0; i < 10; i++) {
-    for (int j = 0; j < R * 10; j++) {
+    for (int j = 0; j < R; j++) {
       k = punterosLista[j].p->data[0];
     }
   }
   /*-----------Fin codigo a medir-----------*/
 
-  // Liberar memoria
   ck = get_counter();
 
   printf("\n Clocks=%1.10lf \n", ck);
@@ -122,6 +120,9 @@ int main(int argc, char const *argv[]) {
   /* Esta rutina imprime a frecuencia de reloxo estimada coas rutinas
    * start_counter/get_counter */
   mhz(1, 1);
+
+  // Liberar memoria
+  _mm_free(punterosLista);
 
   return 0;
 }
