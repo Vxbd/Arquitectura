@@ -60,6 +60,8 @@ int main(int argc, char const *argv[]) {
   int R;      // Elementos lista, numero de estruturas.
   long int k; // Elemento auxiliar para la asignacion a una variable
 
+  FILE *fichero;
+
   // Asinacion de D y R por linea de comandos
   if (argc == 3) {
     D = atoi(argv[1]);
@@ -103,19 +105,37 @@ int main(int argc, char const *argv[]) {
      */
   }
 
-  start_counter();
+    switch(D)
+  {
+    case 1 : fichero = fopen("proba1a.csv", "a+");
+      break;
+    case 3 : fichero = fopen("proba3a.csv", "a+");
+      break;
+    case 15 : fichero = fopen("proba15a.csv", "a+");
+      break;
+    case 40 : fichero = fopen("proba40a.csv", "a+");
+      break;
+    case 80 : fichero = fopen("proba80a.csv", "a+");
+      break;
+  }
+
   /*---------Inicio codigo a medir---------*/
   // Accedemos con un bucle a los elementos de la lista
   for (int i = 0; i < 10; i++) {
     for (int j = 0; j < R; j++) {
+      start_counter();
       k = punterosLista[j].p->data[0];
+      ck += get_counter();
     }
   }
   /*-----------Fin codigo a medir-----------*/
 
-  ck = get_counter();
+  printf("\n Clocks=%1.10lf, %ld\n", ck / (10 * R), (sizeof(s) * R)/64);
+  fprintf(fichero, "%1.10lf, %ld\n", ck / (10 * R), (sizeof(s) * R)/64);
 
-  printf("\n Clocks=%1.10lf \n", ck);
+  fclose(fichero);
+
+ //printf("\n Clocks=%1.10lf \n", ck);
 
   /* Esta rutina imprime a frecuencia de reloxo estimada coas rutinas
    * start_counter/get_counter */

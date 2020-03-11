@@ -60,7 +60,6 @@ int main(int argc, char const *argv[]) {
   int R;        // Elementos lista, numero de estruturas.
   long int k;   // Elemento auxiliar para la asignacion a una variable
   int CLS = 64; // Cache line size (Tamanho de linea cache)
-  FILE *fichero = fopen("proba.csv", "w");
 
   // Asinacion de D y R por linea de comandos
   if (argc == 3) {
@@ -69,6 +68,25 @@ int main(int argc, char const *argv[]) {
   } else {
     perror("ERRO: O formato debe ser: ./executable -D -R\n");
   }
+
+
+  FILE *fichero;
+
+  switch(D)
+  {
+    case 1 : fichero = fopen("proba1.csv", "a+");
+      break;
+    case 3 : fichero = fopen("proba3.csv", "a+");
+      break;
+    case 15 : fichero = fopen("proba15.csv", "a+");
+      break;
+    case 40 : fichero = fopen("proba40.csv", "a+");
+      break;
+    case 80 : fichero = fopen("proba80.csv", "a+");
+      break;
+
+  }
+  
 
   typedef struct s {
     struct s *p;
@@ -99,7 +117,10 @@ int main(int argc, char const *argv[]) {
     }
   }
 
-  printf("\n Clocks=%1.10lf \n", ck / (10 * R));
+  printf("\n Clocks=%1.10lf, %ld\n", ck / (10 * R), (sizeof(s) * R)/64);
+  fprintf(fichero, "%1.10lf, %ld\n", ck / (10 * R), (sizeof(s) * R)/64);
+
+  fclose(fichero);
 
   /* Esta rutina imprime a frecuencia de reloxo estimada coas rutinas
    * start_counter/get_counter */
