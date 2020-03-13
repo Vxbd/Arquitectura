@@ -63,30 +63,50 @@ int main(int argc, char const *argv[]) {
 
   // Asinacion de D y R por linea de comandos
   if (argc == 3) {
-    D = atoi(argv[1]);
-    R = atoi(argv[2]);
+    D = atof(argv[1]);
+    /*
+     * Como con D=40 y D=80 el tamanho de la estructura no ocupa un número de
+     * lineas exacto, redondeamos hacia arriba cogiendo una estructura entera
+     * aunque luego toquemos más lineas de las necesarias con el fin de, tocar
+     * al menos esas
+     */
+    if (atoi(argv[2]) == 49 || atoi(argv[2]) == 149 || atoi(argv[2]) == 399 ||
+        atoi(argv[2]) == 1198 || atoi(argv[2]) == 9590 ||
+        atoi(argv[2]) == 14385 || atoi(argv[2]) == 38362 ||
+        atoi(argv[2]) == 153450 || atoi(argv[2]) == 25 || atoi(argv[2]) == 75 ||
+        atoi(argv[2]) == 202 || atoi(argv[2]) == 606 || atoi(argv[2]) == 4854 ||
+        atoi(argv[2]) == 7281 || atoi(argv[2]) == 19418 ||
+        atoi(argv[2]) == 77672 || atoi(argv[2]) == 196608 ||
+        atoi(argv[2]) == 786432) {
+      R = atoi(argv[2]) + 1;
+    } else {
+      R = atoi(argv[2]);
+    }
   } else {
     perror("ERRO: O formato debe ser: ./executable -D -R\n");
   }
 
+  printf("%d - %d\n", D, R);
 
   FILE *fichero;
 
-  switch(D)
-  {
-    case 1 : fichero = fopen("proba1.csv", "a+");
-      break;
-    case 3 : fichero = fopen("proba3.csv", "a+");
-      break;
-    case 15 : fichero = fopen("proba15.csv", "a+");
-      break;
-    case 40 : fichero = fopen("proba40.csv", "a+");
-      break;
-    case 80 : fichero = fopen("proba80.csv", "a+");
-      break;
-
+  switch (D) {
+  case 1:
+    fichero = fopen("proba1.csv", "a+");
+    break;
+  case 3:
+    fichero = fopen("proba3.csv", "a+");
+    break;
+  case 15:
+    fichero = fopen("proba15.csv", "a+");
+    break;
+  case 40:
+    fichero = fopen("proba40.csv", "a+");
+    break;
+  case 80:
+    fichero = fopen("proba80.csv", "a+");
+    break;
   }
-  
 
   typedef struct s {
     struct s *p;
@@ -106,19 +126,22 @@ int main(int argc, char const *argv[]) {
   // Hacemos que la lista sea enlazada(cerrada)
   punterosLista[R - 1].p = &punterosLista[0];
 
+  start_counter();
+  /*---------Inicio codigo a medir---------*/
+  // Tomamos la primera posicion de la lista
+  s *pos = &punterosLista[0];
   // Accedemos con un bucle a los elementos de la lista
   for (int i = 0; i < 10; i++) {
     for (int j = 0; j < R; j++) {
-      /*---------Inicio codigo a medir---------*/
-      start_counter();
-      k = punterosLista[j].p->data[0];
-      ck += get_counter();
-      /*-----------Fin codigo a medir-----------*/
+      k = pos->data[0];
+      pos = pos->p;
     }
   }
+  ck = get_counter();
+  /*-----------Fin codigo a medir-----------*/
 
-  printf("\n Clocks=%1.10lf, %ld\n", ck / (10 * R), (sizeof(s) * R)/64);
-  fprintf(fichero, "%1.10lf, %ld\n", ck / (10 * R), (sizeof(s) * R)/64);
+  printf("\n Clocks=%1.10lf, %ld\n", ck / (10 * R), (sizeof(s) * R) / 64);
+  fprintf(fichero, "%1.10lf, %ld\n", ck / (10 * R), (sizeof(s) * R) / 64);
 
   fclose(fichero);
 
