@@ -86,25 +86,23 @@ int main(int argc, char const *argv[]) {
     perror("ERRO: O formato debe ser: ./executable -D -R\n");
   }
 
-  printf("%d - %d\n", D, R);
-
   FILE *fichero;
-
+  // En funcion del valor de D anhadiremos los datos de la prueba a un archivo
   switch (D) {
   case 1:
-    fichero = fopen("proba1.csv", "a+");
+    fichero = fopen("prueba1.csv", "a+");
     break;
   case 3:
-    fichero = fopen("proba3.csv", "a+");
+    fichero = fopen("prueba3.csv", "a+");
     break;
   case 15:
-    fichero = fopen("proba15.csv", "a+");
+    fichero = fopen("prueba15.csv", "a+");
     break;
   case 40:
-    fichero = fopen("proba40.csv", "a+");
+    fichero = fopen("prueba40.csv", "a+");
     break;
   case 80:
-    fichero = fopen("proba80.csv", "a+");
+    fichero = fopen("prueba80.csv", "a+");
     break;
   }
 

@@ -21,6 +21,6 @@ for i in "${NLC[@]}";do
 		echo $i
 		R=$(echo "$i/(8+(8*$j))" | bc)
 		echo "Prueba -> ./arcompRandom $j $R"
-		./arcomp $j $R
+		./arcompRandom $j $R
 	done
 done
