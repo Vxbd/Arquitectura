@@ -20,7 +20,7 @@ for i in "${NLC[@]}";do
 	for j in "${D[@]}";do
 		echo $i
 		R=$(echo "$i/(8+(8*$j))" | bc)
-		echo "Prueba -> ./arcompRandom $j $R"
-		./arcompRandom $j $R
+		echo "Prueba -> ./arcomp $j $R"
+		./arcomp $j $R
 	done
 done
